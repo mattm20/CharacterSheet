@@ -1,0 +1,65 @@
+<!doctype html>
+<head>
+    <title>D&D Dicebot</title>
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='characterSheet.css')}}">
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='myCSS.css')}}">
+</head>
+
+<body id='pageBody'>
+    <div id='attacksContainer'>
+        <h3>Attacks</h3>
+        {% for key in attacks %}
+            <div id="attack">
+                <div id="attackDescription">
+                    <h4>{{key}}: </h4>
+                    <p> {{attacks[key]['description']}}</p>
+                </div>
+                {% set dX = attacks[key]['dX'] %}
+                {% set numDice = attacks[key]['numDice'] %}
+                <div id="numberOfDice">{{numDice}}</div>
+                {% set modifyBy = attacks[key]['modifier'] %}
+                {% set buttonId = key + '_rollButton' %}
+                <div id='dieCase'>
+                    {% if dX == 8 %}
+                        <img id='dieImage' src="{{ url_for('static', filename='d8.jpg')}}" alt="d8">
+                    {% elif dX == 6 %}
+                        <img id='dieImage' src="{{ url_for('static', filename='d6.jpg')}}" alt="d6">
+                    {% elif dX == 10 %}
+                        <img id='dieImage' src="{{ url_for('static', filename='d10.jpg')}}" alt="d10">
+                    {% endif %}
+                    <h4 id="rollDesc">Roll {{numDice}}d{{dX}}</h4>
+                    <button id={{buttonId}}>Roll</button>
+                    <table id='rollResultsTable'>
+                        {% for roll in range(1,20) %}
+                            {% if roll <= numDice %}
+                            {% set rollLabel = "roll_" + loop.index|string %}
+                            {% set resultKey = key + rollLabel %}
+                            <tr>
+                                <td>{{rollLabel}}:</td>
+                                <td id={{resultKey}}>0</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                        <tr id='addMod'>
+                        {% set modId = key + 'modifier' %}
+                            <td>modifier:</td>
+                            <td id=modId>{{modifyBy}}</td>
+                        </tr>
+                        <tr id='calculateResult'>
+                        {% set sumId = key + 'sum' %}
+                            <td>Result:</td>
+                            <td id=sumId>0</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div id='savingThrowsContainer'>
+        <h3>Saving Throws</h3>
+    </div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='characterSheet.js')}}"></script>
+
+</body>
+
